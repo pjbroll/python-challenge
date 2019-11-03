@@ -20,6 +20,11 @@ with open(budget_csv, newline='') as csvfile:
     sum = 0
     totalMonths = 0
 
+    # initialize values to calculate monthly change differences
+    monthAmt = []
+    delta = 0
+    deltaTotal = 0
+
     # Read each row of data after the header
     for row in csvreader:
         totalMonths = totalMonths + 1
@@ -35,6 +40,16 @@ with open(budget_csv, newline='') as csvfile:
             profitDecrease = int(row[1])
             monthMin = row[0]
 
+        # add the monthly amount for the change calculation to the list
+        monthAmt.append(int(row[1]))
+        
+        # use conditional to check for second month and beyond to calculate monthly difference
+        if totalMonths > 1:
+
+            # delta is the monthly difference and deltaTotal is the sum of monthly differences
+            delta = monthAmt[totalMonths-1] - monthAmt[totalMonths - 2]
+            deltaTotal = deltaTotal + delta
+
 # format output and print to screen 
 print("     Financial Analysis     ")
 print("----------------------------")
@@ -42,7 +57,7 @@ print(f"Total Months: {totalMonths}")
 
 # f print format (variable: .2f) produces two decimal point float output
 print(f"Total: ${sum:.2f}")
-print(f"Average Change: ${(sum / totalMonths):.2f}")
+print(f"Average Change: ${(deltaTotal / (totalMonths - 1)):.2f}")
 print(f"Greatest Increase in Profits: {monthMax} (${profitIncrease:.2f})")
 print(f"Greatest Decrease in Profits: {monthMin} (${profitDecrease:.2f})")
 
@@ -57,7 +72,7 @@ output_file.write("     Financial Analysis     \n")
 output_file.write("----------------------------\n")
 output_file.write(f"Total Months: {totalMonths}\n")
 output_file.write(f"Total: ${sum:.2f}\n")
-output_file.write(f"Average Change: ${(sum / totalMonths):.2f}\n")
+output_file.write(f"Average Change: ${(deltaTotal / (totalMonths - 1)):.2f}\n")
 output_file.write(f"Greatest Increase in Profits: {monthMax} (${profitIncrease:.2f})\n")
 output_file.write(f"Greatest Decrease in Profits: {monthMin} (${profitDecrease:.2f})\n")
 
